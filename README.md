@@ -1,6 +1,6 @@
 # Data Segmentation with PCA and K-Medoids Clustering
 
-This repo is part of my undergraduate thesis project. It contains code(s) with the following objectives:
+This repo is part of my undergraduate thesis project. It contains datasets and codes with the following objectives:
 
 - Demonstrate PCA (Principal Component Analysis) both from scratch and built-in function. 
 
@@ -11,4 +11,4 @@ This repo is part of my undergraduate thesis project. It contains code(s) with t
 
   1. 26/11/2020: Upload notes about delay
   
-  2. 27/11/2020: Upload processed datasets and raw codes (bit messy :p)
+  2. 27/11/2020: Upload processed datasets and raw codes (pardon my messy code structure :p)
