@@ -9,4 +9,6 @@ This repo is part of my undergraduate thesis project. It contains code(s) with t
 
 ### Updates:
 
-  1. 26/11/2020: Upload all datasets
+  1. 26/11/2020: Upload notes about delay
+  
+  2. 27/11/2020: Upload processed datasets and raw codes (bit messy :p)
