@@ -1,0 +1,275 @@
+{
+  "status_code": 200,
+  "data": [
+    {
+      "kode_kemendagri": "32.04",
+      "kode_bps": 3204,
+      "nama_wilayah": "KAB. BANDUNG",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.1,
+      "longitude": 107.611
+    },
+    {
+      "kode_kemendagri": "32.17",
+      "kode_bps": 3217,
+      "nama_wilayah": "KAB. BANDUNG BARAT",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.897,
+      "longitude": 107.415
+    },
+    {
+      "kode_kemendagri": "32.16",
+      "kode_bps": 3216,
+      "nama_wilayah": "KAB. BEKASI",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.215,
+      "longitude": 107.121
+    },
+    {
+      "kode_kemendagri": "32.01",
+      "kode_bps": 3201,
+      "nama_wilayah": "KAB. BOGOR",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.56,
+      "longitude": 106.768
+    },
+    {
+      "kode_kemendagri": "32.07",
+      "kode_bps": 3207,
+      "nama_wilayah": "KAB. CIAMIS",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.291,
+      "longitude": 108.429
+    },
+    {
+      "kode_kemendagri": "32.03",
+      "kode_bps": 3203,
+      "nama_wilayah": "KAB. CIANJUR",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.134,
+      "longitude": 107.158
+    },
+    {
+      "kode_kemendagri": "32.09",
+      "kode_bps": 3209,
+      "nama_wilayah": "KAB. CIREBON",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.746,
+      "longitude": 108.551
+    },
+    {
+      "kode_kemendagri": "32.05",
+      "kode_bps": 3205,
+      "nama_wilayah": "KAB. GARUT",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.36,
+      "longitude": 107.789
+    },
+    {
+      "kode_kemendagri": "32.12",
+      "kode_bps": 3212,
+      "nama_wilayah": "KAB. INDRAMAYU",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.449,
+      "longitude": 108.169
+    },
+    {
+      "kode_kemendagri": "32.15",
+      "kode_bps": 3215,
+      "nama_wilayah": "KAB. KARAWANG",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.252,
+      "longitude": 107.354
+    },
+    {
+      "kode_kemendagri": "32.08",
+      "kode_bps": 3208,
+      "nama_wilayah": "KAB. KUNINGAN",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.004,
+      "longitude": 108.56
+    },
+    {
+      "kode_kemendagri": "32.10",
+      "kode_bps": 3210,
+      "nama_wilayah": "KAB. MAJALENGKA",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.816,
+      "longitude": 108.258
+    },
+    {
+      "kode_kemendagri": "32.18",
+      "kode_bps": 3218,
+      "nama_wilayah": "KAB. PANGANDARAN",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.636,
+      "longitude": 108.519
+    },
+    {
+      "kode_kemendagri": "32.14",
+      "kode_bps": 3214,
+      "nama_wilayah": "KAB. PURWAKARTA",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.595,
+      "longitude": 107.432
+    },
+    {
+      "kode_kemendagri": "32.13",
+      "kode_bps": 3213,
+      "nama_wilayah": "KAB. SUBANG",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.484,
+      "longitude": 107.732
+    },
+    {
+      "kode_kemendagri": "32.02",
+      "kode_bps": 3202,
+      "nama_wilayah": "KAB. SUKABUMI",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.076,
+      "longitude": 106.707
+    },
+    {
+      "kode_kemendagri": "32.11",
+      "kode_bps": 3211,
+      "nama_wilayah": "KAB. SUMEDANG",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.825,
+      "longitude": 107.981
+    },
+    {
+      "kode_kemendagri": "32.06",
+      "kode_bps": 3206,
+      "nama_wilayah": "KAB. TASIKMALAYA",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.497,
+      "longitude": 108.141
+    },
+    {
+      "kode_kemendagri": "32.73",
+      "kode_bps": 3273,
+      "nama_wilayah": "KOTA BANDUNG",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.919,
+      "longitude": 107.637
+    },
+    {
+      "kode_kemendagri": "32.79",
+      "kode_bps": 3279,
+      "nama_wilayah": "KOTA BANJAR",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.376,
+      "longitude": 108.567
+    },
+    {
+      "kode_kemendagri": "32.75",
+      "kode_bps": 3275,
+      "nama_wilayah": "KOTA BEKASI",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.28,
+      "longitude": 106.976
+    },
+    {
+      "kode_kemendagri": "32.71",
+      "kode_bps": 3271,
+      "nama_wilayah": "KOTA BOGOR",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.593,
+      "longitude": 106.8
+    },
+    {
+      "kode_kemendagri": "32.77",
+      "kode_bps": 3277,
+      "nama_wilayah": "KOTA CIMAHI",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.886,
+      "longitude": 107.544
+    },
+    {
+      "kode_kemendagri": "32.74",
+      "kode_bps": 3274,
+      "nama_wilayah": "KOTA CIREBON",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.742,
+      "longitude": 108.554
+    },
+    {
+      "kode_kemendagri": "32.76",
+      "kode_bps": 3276,
+      "nama_wilayah": "KOTA DEPOK",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.396,
+      "longitude": 106.817
+    },
+    {
+      "kode_kemendagri": "32.72",
+      "kode_bps": 3272,
+      "nama_wilayah": "KOTA SUKABUMI",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -6.94,
+      "longitude": 106.924
+    },
+    {
+      "kode_kemendagri": "32.78",
+      "kode_bps": 3278,
+      "nama_wilayah": "KOTA TASIKMALAYA",
+      "tingkat_wilayah": 2,
+      "parent_kemendagri": "null",
+      "parent_bps": 0,
+      "latitude": -7.36,
+      "longitude": 108.219
+    }
+  ]
+}

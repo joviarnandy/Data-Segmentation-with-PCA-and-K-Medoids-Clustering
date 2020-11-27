@@ -1,0 +1,480 @@
+---
+title: "Seminar 2 RekapKasusAktif Rt Susanto"
+author: "Jovi Arnandy"
+date: "10/24/2020"
+output: html_document
+---
+
+```{r}
+library(factoextra)
+library(NbClust)
+library(cluster)
+library(tidyverse)
+library(hrbrthemes)
+library(viridis)
+library(patchwork)
+library(psych)
+library(robustbase)
+library(wesanderson)
+```
+
+*read data*
+```{r}
+normalized_rekapkasus_rt_susanto = read.csv(file="datasets/normalized_data_rekapkasus_rt_susanto.csv")
+rownames(normalized_rekapkasus_rt_susanto) = normalized_rekapkasus_rt_susanto$KabupatenKota
+normalized_rekapkasus_rt_susanto$KabupatenKota = NULL
+```
+
+```{r}
+bmatrix = function(x, digits=NULL, ...) {
+  library(xtable)
+  default_args = list(include.colnames=FALSE, only.contents=TRUE,
+                      include.rownames=FALSE, hline.after=NULL, comment=FALSE,
+                      print.results=FALSE)
+  passed_args = list(...)
+  calling_args = c(list(x=xtable(x, digits=digits)),
+                   c(passed_args,
+                     default_args[setdiff(names(default_args), names(passed_args))]))
+  cat("\\begin{bmatrix}\n",
+      do.call(print.xtable, calling_args),
+      "\\end{bmatrix}\n")
+}
+```
+
+*perform manual pca*
+```{r}
+df = normalized_rekapkasus_rt_susanto
+A = data.matrix(df)
+K = (1/(nrow(df)-1)) * t(A) %*% A
+```
+
+```{r}
+first_eig_val = eigen(K)$values[1:2][1] # first largest eigen values
+first_eig_vect = eigen(K)$vectors[,1] #eigenvector corresponding to first largest eigen values 
+
+second_eig_val = eigen(K)$values[1:2][2] # second largest eigen values
+second_eig_vect = eigen(K)$vectors[,2] #eigenvector corresponding to second largest eigen values
+
+round((first_eig_vect) %*% (second_eig_vect)) #validate orthogonality
+```
+
+
+```{r}
+first_coord_principle = A %*% first_eig_vect
+second_coord_principle = A %*% second_eig_vect
+```
+
+```{r}
+mult_result = A %*% cbind(first_eig_vect,second_eig_vect)
+```
+
+```{r}
+bmatrix(as.matrix(second_coord_principle))
+```
+
+
+*perform automatic PCA*
+```{r}
+res.pca = prcomp(A, scale = FALSE,center = FALSE)
+auto_eig_val = get_eigenvalue(res.pca)$eigenvalue[1:2]
+auto_eig_vect = get_pca_ind(res.pca)$coord[,1:2]
+```
+
+```{r}
+zero_matrix = round(mult_result - auto_eig_vect) #validate manual equals automatic in terms of PCA results 
+```
+
+```{r}
+fviz_pca_ind(res.pca,col.ind = "y", # Color by the quality of representation
+             gradient.cols = wes_palette("FantasticFox1"),
+             repel = TRUE, labelsize = 3
+             )
+```
+
+
+```{r}
+fviz_pca_ind(res.pca,col.ind = "y", # Color by the quality of representation
+             gradient.cols = wes_palette("FantasticFox1"),label="none"
+             )
+```
+
+
+```{r}
+get_eigenvalue(res.pca)$eigenvalue[1]/sum(get_eigenvalue(res.pca)$eigenvalue)
+
+get_eigenvalue(res.pca)$eigenvalue[2]/sum(get_eigenvalue(res.pca)$eigenvalue)
+```
+
+*transpose PCA result for K-Medoid Clustering*
+```{r}
+Ytheory = t(as.matrix(cbind(first_coord_principle,second_coord_principle)))
+rm(list=setdiff(ls(), "Ytheory"))
+cat("\014")
+#Perhatikan bahwa Ytheory di atas itu sesuai secara teoretik. Namun secara aplikasi Y haruslah ditranspos menjadi Ypractical.
+Ypractical = t(Ytheory)
+```
+
+
+*Perform K-Medoid Clustering Analysis*
+```{r Find Local Optima for Cluster Number}
+set.seed(10116070)
+#kmed = pam(Yt,diss = FALSE, metric = "euclidean",stand = FALSE)
+fviz_nbclust(Ypractical, pam, method = "wss",k.max=15,linecolor = "red") +
+    geom_vline(xintercept =3, linetype = 2)+
+  labs(subtitle = "Metode Siku")
+```
+
+
+```{r Cluster Plot}
+set.seed(10116070)
+res_medoid <- pam(as.data.frame(Ypractical),diss = F,metric ="euclidean",stand = F, 3)
+fviz_cluster(res_medoid,main = "Plot Gerombol (terputar 180 derajat terhadap sumbu mendatar)",repel = T,xlab = "Komponen Utama ke - 1",ylab = "Komponen Utama ke - 2",show.clust.cent = T,labelsize = 9) 
+```
+
+
+
+```{r assign cluster label to original transposed PCA matrix}
+
+df_Ypractical = as.data.frame(Ypractical)
+df_Ypractical = cbind.data.frame(as.data.frame(rownames(df_Ypractical)),df_Ypractical)
+
+rownames(df_Ypractical) = NULL
+colnames(df_Ypractical) = c("KabupatenKota","KU_1","KU_2")
+
+df_Ypractical$Gerombol = res_medoid$clustering
+```
+
+
+```{r}
+clean_data = read.csv(file = "datasets/clean_data_rekapkasus_rt_susanto.csv")
+clean_data$Gerombol = df_Ypractical$Gerombol
+```   
+
+```{r}
+data = clean_data[,-1]
+data_kasus_aktif = data[,1:9]
+data_kasus_aktif$Gerombol = data$Gerombol
+library(dplyr)
+# solution
+data_kasus_aktif = data_kasus_aktif %>% mutate_if(is.integer,as.numeric)
+data_kasus_aktif$Gerombol = as.integer(data_kasus_aktif$Gerombol)
+data_rekap_kasus = data[,10:11]
+data_rekap_kasus$Gerombol = data$Gerombol
+data_transmisi_virus = data[,12:20]
+data_transmisi_virus$Gerombol = data$Gerombol
+```
+
+```{r}
+gerombol1_rekap_kasus = data_rekap_kasus[data_rekap_kasus$Gerombol == 1,]
+gerombol1_rekap_kasus$Gerombol = NULL
+gerombol1_rekap_kasus <- gerombol1_rekap_kasus %>% 
+  gather(key="text", value="value") %>%
+  mutate(text = gsub("\\.", " ",text)) %>%
+  mutate(value = round(as.numeric(value),0))
+
+gerombol2_rekap_kasus = data_rekap_kasus[data_rekap_kasus$Gerombol == 2,]
+gerombol2_rekap_kasus$Gerombol = NULL
+gerombol2_rekap_kasus <- gerombol2_rekap_kasus %>% 
+  gather(key="text", value="value") %>%
+  mutate(text = gsub("\\.", " ",text)) %>%
+  mutate(value = round(as.numeric(value),0))
+
+gerombol3_rekap_kasus = data_rekap_kasus[data_rekap_kasus$Gerombol == 3,]
+gerombol3_rekap_kasus$Gerombol = NULL
+gerombol3_rekap_kasus <- gerombol3_rekap_kasus %>% 
+  gather(key="text", value="value") %>%
+  mutate(text = gsub("\\.", " ",text)) %>%
+  mutate(value = round(as.numeric(value),0))
+
+```
+
+
+```{r interpret final data}
+gerombol1_rekap_kasus %>%
+  mutate(text = fct_reorder(text, value)) %>%
+  ggplot( aes(x=text, y=value, fill=text)) +
+    geom_boxplot() +
+    # geom_jitter(color="grey", alpha=0.3, size=0.9) +
+    scale_fill_viridis(discrete=TRUE) +
+    theme_ipsum() +
+    theme(
+      legend.position="none",axis.text.x = element_text(angle = 24)
+    ) +
+    ylim(0, 5000)+
+    # coord_flip() +
+    xlab("") +
+    ylab("Jumlah Peserta")
+```
+# Newly added Code 
+
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==1,])))[1:9]
+```
+
+
+```{r interpret final data}
+y2 = as.vector(colMeans(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==1,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,200), ylab="Jumlah Kasus Aktif" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(5,150,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Profil Kasus Aktif Gerombol 1")
+```
+
+
+
+
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==1,])))[1:9]
+```
+
+
+```{r interpret final data}
+y2 = as.vector(colMeans(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==1,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,4), ylab="Rt" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(5,4,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Estimasi Bilangan Reproduksi Efektif Gerombol 1")
+```
+
+
+```{r}
+data_rekap_kasus[data_rekap_kasus$Gerombol==1,] %>% summary()
+```
+```{r}
+#data_transmisi_virus[data_transmisi_virus$Gerombol==1,] %>% summary()
+```
+
+```{r interpret final data}
+gerombol2_rekap_kasus %>%
+  mutate(text = fct_reorder(text, value)) %>%
+  ggplot( aes(x=text, y=value, fill=text)) +
+    geom_boxplot() +
+    # geom_jitter(color="grey", alpha=0.3, size=0.9) +
+    scale_fill_viridis(discrete=TRUE) +
+    theme_ipsum() +
+    theme(
+      legend.position="none",axis.text.x = element_text(angle = 24)
+    ) +
+   ylim(0, 5000)+
+    #coord_flip() +
+    xlab("") +
+    ylab("Jumlah Peserta")
+```
+# newly added code (need revision)
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==2,])))[1:9]
+```
+
+
+```{r interpret final data}
+y2 = as.vector(colMeans(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==2,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,2000), ylab="Jumlah Kasus Aktif" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(5,1500,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Profil Kasus Aktif Gerombol 2")
+```
+
+
+
+
+
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==2,])))[1:9]
+y2 = as.vector(colMeans(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==2,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,4), ylab="Rt" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(5,4,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Estimasi Bilangan Reproduksi Efektif Gerombol 2")
+```
+
+
+```{r}
+data_rekap_kasus[data_rekap_kasus$Gerombol==2,] %>% summary()
+```
+```{r}
+#data_transmisi_virus[data_transmisi_virus$Gerombol==2,] %>% summary()
+```
+
+
+
+```{r interpret final data}
+gerombol3_rekap_kasus %>%
+  mutate(text = fct_reorder(text, value)) %>%
+  ggplot( aes(x=text, y=value, fill=text)) +
+    geom_boxplot() +
+    # geom_jitter(color="grey", alpha=0.3, size=0.9) +
+    scale_fill_viridis(discrete=TRUE) +
+    theme_ipsum() +
+    theme(
+      legend.position="none",axis.text.x = element_text(angle = 24)
+    ) +
+   ylim(0, 5000)+
+    #coord_flip() +
+    xlab("") +
+    ylab("Jumlah Peserta")
+```
+
+# newly added code (need revision)
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==3,])))[1:9]
+```
+
+
+```{r interpret final data}
+y2 = as.vector(colMeans(as.matrix(data_kasus_aktif[data_kasus_aktif$Gerombol==3,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,200), ylab="Jumlah Kasus Aktif" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(5,150,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Profil Kasus Aktif Gerombol 3")
+```
+
+
+
+```{r interpret final data}
+waktu_penting_ke = 1:9
+y1 = as.vector(colMedians(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==3,])))[1:9]
+y2 = as.vector(colMeans(as.matrix(data_transmisi_virus[data_transmisi_virus$Gerombol==3,])))[1:9]
+
+plot(waktu_penting_ke, y1, type="o", col="blue", pch="o", lty=1, ylim=c(0,4), ylab="Rt" )
+
+points(waktu_penting_ke, y2, col="red", pch="*")
+lines(waktu_penting_ke, y2, col="red",lty=2)
+legend(7,4,legend=c("median","rerata"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+title("Estimasi Bilangan Reproduksi Efektif Gerombol 3")
+```
+
+
+```{r}
+data_rekap_kasus[data_rekap_kasus$Gerombol==3,] %>% summary()
+```
+```{r}
+#data_transmisi_virus[data_transmisi_virus$Gerombol==3,] %>% summary()
+```
+
+
+*Choropleth*
+
+```{r}
+library(geojsonio)
+library(rjson)
+library(dplyr)
+library(leaflet)
+```
+
+```{r}
+jawabarat_json <- geojson_read("datasets/JAWABARAT.json", what = "sp")
+head(jawabarat_json@data)
+```
+
+```{r}
+jawabarat_json_mod <- sf::st_as_sf(jawabarat_json)
+head(jawabarat_json_mod)
+```
+
+```{r}
+jawabarat_json_mod <- jawabarat_json_mod %>% 
+  filter(ADM2_NAME != "WADUK CIRATA" & ADM2_NAME != "KOTA BANJAR")  %>%                        
+  dplyr::select(-c(id, ADM2ALT1EN , ADM2_REF, ADM2ALT2EN)) 
+jawabarat_json_mod$KabupatenKota = jawabarat_json_mod$ADM2_NAME
+jawabarat_json_mod = jawabarat_json_mod %>%
+  select(-c(DATE,VALIDON,VALIDTO,SHAPE_LENG,SHAPE_AREA))
+jawabarat_json_mod = jawabarat_json_mod %>%
+  select(c(KabupatenKota,geometry))
+colnames(jawabarat_json_mod) = c("KabupatenKota","geometry")
+glimpse(jawabarat_json_mod)
+```
+
+```{r}
+# Give the input file name to the function.
+result <- fromJSON(file = "datasets/pikobar_API.json")
+
+# Convert JSON file to a data frame.
+pikobar_df <- data.frame()
+
+for (i in 1:27){
+  pikobar_df = rbind.data.frame(pikobar_df,result$data[[i]])
+}
+
+pikobar_df = pikobar_df %>% select(c("nama_wilayah","latitude","longitude"))
+
+colnames(pikobar_df) = c("KabupatenKota","latitude","longitude")
+```
+
+```{r}
+Revised_data_gerombol = read.csv("datasets/clean_data_rekapkasus_rt_susanto.csv")
+Revised_data_gerombol = cbind.data.frame(Revised_data_gerombol[,1],data)
+colnames(Revised_data_gerombol)[1] = "KabupatenKota"
+# Revised_data_gerombol = readRDS("Revised_Output_Data.rds")
+```
+
+```{r}
+Revised_data_gerombol = Revised_data_gerombol %>%
+select(c("KabupatenKota","Gerombol"))
+```
+
+```{r}
+Revised_data_gerombol = left_join(pikobar_df,Revised_data_gerombol)
+```
+
+```{r}
+Revised_data_gerombol = left_join(jawabarat_json_mod,Revised_data_gerombol)
+```
+
+```{r}
+# PreRevised_data_gerombol$latitude = NULL
+# PreRevised_data_gerombol$longitude = NULL
+Revised_data_gerombol$Gerombol = as.factor(Revised_data_gerombol$Gerombol)
+Revised_data_gerombol[which(is.na(Revised_data_gerombol$Gerombol)),] = NULL
+```
+
+```{r}
+glimpse(Revised_data_gerombol)
+```
+
+```{r}
+numCOL = length(unique(Revised_data_gerombol$Gerombol))
+factpal <- colorFactor(topo.colors(numCOL), Revised_data_gerombol$Gerombol)
+
+Revised_data_gerombol <- Revised_data_gerombol %>% sf::st_as_sf()
+leaflet(Revised_data_gerombol) %>%
+  addProviderTiles(providers$Esri.WorldImagery)%>%
+  addPolygons(dashArray = "2", weight = 2,stroke = FALSE, smoothFactor = 0.1, fillOpacity = 0.25,
+    color = ~factpal(Gerombol),
+     label = Revised_data_gerombol$KabupatenKota) %>%
+  addLabelOnlyMarkers(data = pikobar_df,
+                    lng = ~longitude, lat = ~latitude, label = ~KabupatenKota,
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,style = list("color" = "white", 
+                                  "font-family" = "serif",
+                                  "font-style" = "normal",
+                                  "font-size" = "12px" ))) %>%
+ addLabelOnlyMarkers(108.379537, -6.009965, label =  "Data RekapKasusAktif_Susanto_Penting", 
+                      labelOptions = labelOptions(noHide = T, textOnly = T,style = list("color" = "white", 
+                                  "font-family" = "serif",
+                                  "font-style" = "bold",
+                                  "font-size" = "18px" ))) %>%
+    addLegend("bottomright", 
+            pal = factpal,
+            values = 1:numCOL,
+            title = "Gerombol",
+            opacity = 1)
+```
