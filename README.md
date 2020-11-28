@@ -9,11 +9,11 @@ This repo is part of my undergraduate thesis project under [Dr. Nuning Nuraini S
 
 ### References for Datasets and Codes:
 
-  1. West Java's Public Health Office
+  1. West Java's Public Health Office age-morbidity related data
   
   2. [PIKOBAR API](https://covid19-public.digitalservice.id/api/v1/)
   
-  3. [SimcovID Team](https://simcovid.github.io/)
+  3. [SimcovID Team](https://simcovid.github.io/) Rt simulation results
   
   4. Stackoverflow
 
