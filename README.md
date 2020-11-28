@@ -9,7 +9,7 @@ This repo is part of my undergraduate thesis project under [Dr. Nuning Nuraini S
 
 ### References for Datasets and Codes:
 
-  1. West Java's Public Health Office age-morbidity related data
+  1. West Java's Public Health Office age-morbidity related data (sensitive information already masked such as names and addresses)
   
   2. [PIKOBAR API](https://covid19-public.digitalservice.id/api/v1/)
   
