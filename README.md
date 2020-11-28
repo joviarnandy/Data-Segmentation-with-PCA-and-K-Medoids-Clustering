@@ -2,9 +2,9 @@
 
 This repo is part of my undergraduate thesis project under [Dr. Nuning Nuraini S.Si.,M.Si.](https://scholar.google.co.id/citations?user=JWD0YN0AAAAJ&hl=id) supervision. It contains datasets and codes with the following objectives:
 
-- Demonstrate PCA (Principal Component Analysis) both from scratch and built-in function. 
+1. Demonstrate PCA (Principal Component Analysis) both from scratch and built-in function. 
 
-- Apply K-Medoids Clustering on PCA results to segment the data
+2. Apply K-Medoids Clustering on PCA results to segment the data
 
 
 ### References for Datasets and Codes:
